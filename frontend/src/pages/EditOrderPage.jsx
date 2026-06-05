@@ -17,6 +17,9 @@ export default function EditOrderPage() {
       setExpiresAt(data.expiresAt);
       setItems(data.items.map(i => ({ itemName: i.itemName, quantity: i.quantity })));
       setLoading(false);
+    }).catch(() => {
+      setError('Failed to load order');
+      setLoading(false);
     });
   }, [id]);
 

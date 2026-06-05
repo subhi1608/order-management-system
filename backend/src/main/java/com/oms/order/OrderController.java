@@ -2,6 +2,7 @@ package com.oms.order;
 
 import com.oms.order.dto.*;
 import com.oms.user.UserRole;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -25,7 +26,7 @@ public class OrderController {
 
     @PostMapping
     @PreAuthorize("hasRole('CREATOR')")
-    public ResponseEntity<OrderResponse> createOrder(@RequestBody CreateOrderRequest request, Authentication auth) {
+    public ResponseEntity<OrderResponse> createOrder(@RequestBody @Valid CreateOrderRequest request, Authentication auth) {
         return ResponseEntity.status(HttpStatus.CREATED).body(orderService.createOrder(request, auth.getName()));
     }
 
@@ -37,7 +38,7 @@ public class OrderController {
     @PutMapping("/{id}")
     @PreAuthorize("hasRole('CREATOR')")
     public ResponseEntity<OrderResponse> updateOrder(@PathVariable Long id,
-                                                     @RequestBody CreateOrderRequest request,
+                                                     @RequestBody @Valid CreateOrderRequest request,
                                                      Authentication auth) {
         return ResponseEntity.ok(orderService.updateOrder(id, request, auth.getName()));
     }
@@ -57,21 +58,21 @@ public class OrderController {
     @PostMapping("/{id}/complete")
     @PreAuthorize("hasRole('PURCHASER')")
     public ResponseEntity<OrderResponse> completeOrder(@PathVariable Long id,
-                                                       @RequestBody CompleteOrderRequest request) {
+                                                       @RequestBody @Valid CompleteOrderRequest request) {
         return ResponseEntity.ok(orderService.completeOrder(id, request.txnReference()));
     }
 
     @PostMapping("/{id}/return")
     @PreAuthorize("hasRole('PURCHASER')")
     public ResponseEntity<OrderResponse> returnOrder(@PathVariable Long id,
-                                                     @RequestBody PurchaserActionRequest request) {
+                                                     @RequestBody @Valid PurchaserActionRequest request) {
         return ResponseEntity.ok(orderService.returnOrder(id, request.note()));
     }
 
     @PostMapping("/{id}/reject")
     @PreAuthorize("hasRole('PURCHASER')")
     public ResponseEntity<OrderResponse> rejectOrder(@PathVariable Long id,
-                                                     @RequestBody PurchaserActionRequest request) {
+                                                     @RequestBody @Valid PurchaserActionRequest request) {
         return ResponseEntity.ok(orderService.rejectOrder(id, request.note()));
     }
 

@@ -1,2 +1,5 @@
 package com.oms.order.dto;
-public record PurchaserActionRequest(String note) {}
+
+import jakarta.validation.constraints.NotBlank;
+
+public record PurchaserActionRequest(@NotBlank String note) {}

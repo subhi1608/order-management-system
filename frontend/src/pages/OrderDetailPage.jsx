@@ -14,7 +14,8 @@ export default function OrderDetailPage() {
   const [error, setError] = useState('');
 
   useEffect(() => {
-    api.get(`/orders/${id}`).then(({ data }) => setOrder(data));
+    api.get(`/orders/${id}`).then(({ data }) => setOrder(data))
+      .catch(() => setError('Failed to load order'));
   }, [id]);
 
   const doAction = async (action, body = {}) => {

@@ -1,2 +1,5 @@
 package com.oms.order.dto;
-public record CompleteOrderRequest(String txnReference) {}
+
+import jakarta.validation.constraints.NotBlank;
+
+public record CompleteOrderRequest(@NotBlank String txnReference) {}
