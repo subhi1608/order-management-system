@@ -24,5 +24,5 @@ public class OrderItem {
     private String itemName;
 
     @Column(nullable = false)
-    private Integer quantity;
+    private int quantity;
 }
