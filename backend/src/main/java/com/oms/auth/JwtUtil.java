@@ -49,7 +49,14 @@ public class JwtUtil {
                 .getPayload();
     }
 
+    private SecretKey key;
+
+    @jakarta.annotation.PostConstruct
+    private void init() {
+        this.key = Keys.hmacShaKeyFor(secret.getBytes());
+    }
+
     private SecretKey getKey() {
-        return Keys.hmacShaKeyFor(secret.getBytes());
+        return key;
     }
 }

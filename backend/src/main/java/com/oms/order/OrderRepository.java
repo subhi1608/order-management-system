@@ -13,7 +13,7 @@ public interface OrderRepository extends JpaRepository<Order, Long> {
 
     List<Order> findByStatusIn(List<OrderStatus> statuses);
 
-    @Query("SELECT oi.itemName FROM OrderItem oi " +
+    @Query("SELECT DISTINCT oi.itemName FROM OrderItem oi " +
            "WHERE oi.order.status IN :statuses AND oi.order.id != :excludeOrderId")
     List<String> findItemNamesInActiveOrders(
             @Param("statuses") List<OrderStatus> statuses,
