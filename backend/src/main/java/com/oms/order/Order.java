@@ -3,6 +3,7 @@ package com.oms.order;
 import com.oms.user.User;
 import jakarta.persistence.*;
 import lombok.*;
+import lombok.AccessLevel;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
@@ -17,7 +18,7 @@ import java.util.List;
 @Getter
 @Setter
 @NoArgsConstructor
-@AllArgsConstructor
+@AllArgsConstructor(access = AccessLevel.PACKAGE)
 @Builder
 @EntityListeners(AuditingEntityListener.class)
 public class Order {
