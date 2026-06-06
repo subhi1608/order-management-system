@@ -5,6 +5,9 @@ import com.oms.user.User;
 import com.oms.user.UserRepository;
 import com.oms.user.UserRole;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
@@ -86,14 +89,18 @@ public class OrderService {
     }
 
     @Transactional(readOnly = true)
-    public List<OrderResponse> getOrdersForUser(String username, UserRole role) {
-        User user = findUser(username);
-        List<Order> orders = role == UserRole.CREATOR
-                ? orderRepository.findByCreatedBy(user)
-                : orderRepository.findByStatusIn(List.of(
-                        OrderStatus.SUBMITTED, OrderStatus.APPROVED, OrderStatus.COMPLETED,
-                        OrderStatus.REJECTED, OrderStatus.RETURNED));
-        return orders.stream().map(this::toResponse).toList();
+    public Page<OrderResponse> getOrdersForUser(String username, UserRole role, Pageable pageable, String title) {
+        Specification<Order> spec;
+        if (role == UserRole.CREATOR) {
+            spec = Specification.where(OrderSpecification.ownedBy(username))
+                    .and(OrderSpecification.titleContains(title));
+        } else {
+            spec = Specification.where(OrderSpecification.statusIn(List.of(
+                            OrderStatus.SUBMITTED, OrderStatus.APPROVED, OrderStatus.COMPLETED,
+                            OrderStatus.REJECTED, OrderStatus.RETURNED)))
+                    .and(OrderSpecification.titleContains(title));
+        }
+        return orderRepository.findAll(spec, pageable).map(this::toResponse);
     }
 
     @Transactional(readOnly = true)
