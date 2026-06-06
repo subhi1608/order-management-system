@@ -13,7 +13,7 @@ function Layout() {
   return (
     <>
       <NavBar />
-      <main style={{ padding: '24px', maxWidth: 1100, margin: '0 auto' }}>
+      <main className="p-6 max-w-[1100px] mx-auto">
         <Outlet />
       </main>
     </>

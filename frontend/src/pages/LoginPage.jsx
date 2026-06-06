@@ -23,39 +23,31 @@ export default function LoginPage() {
   };
 
   return (
-    <div style={{
-      minHeight: '100vh',
-      display: 'flex',
-      alignItems: 'center',
-      justifyContent: 'center',
-      background: '#f5f5f5',
-    }}>
-      <div style={{
-        background: 'white',
-        padding: 40,
-        borderRadius: 8,
-        boxShadow: '0 2px 12px rgba(0,0,0,0.1)',
-        width: 360,
-      }}>
-        <h1 style={{ margin: '0 0 8px', fontSize: 22, color: '#1976d2' }}>Order Management System</h1>
-        <p style={{ margin: '0 0 24px', color: '#666', fontSize: 14 }}>Sign in to continue</p>
+    <div className="min-h-screen flex items-center justify-center bg-gray-100">
+      <div className="bg-white p-10 rounded-lg shadow-md w-[360px]">
+        <h1 className="mt-0 mb-2 text-[22px] text-[#1976d2]">Order Management System</h1>
+        <p className="mt-0 mb-6 text-gray-500 text-sm">Sign in to continue</p>
         <form onSubmit={handleSubmit}>
-          <label>Username</label>
+          <label htmlFor="login-username">Username</label>
           <input
+            id="login-username"
+            autoComplete="username"
             value={username}
             onChange={e => setUsername(e.target.value)}
             required
             autoFocus
           />
-          <label>Password</label>
+          <label htmlFor="login-password">Password</label>
           <input
+            id="login-password"
             type="password"
+            autoComplete="current-password"
             value={password}
             onChange={e => setPassword(e.target.value)}
             required
           />
           {error && <p className="error">{error}</p>}
-          <button type="submit" style={{ width: '100%', marginTop: 8, padding: '10px' }}>
+          <button type="submit" className="w-full mt-2 py-[10px]">
             Sign In
           </button>
         </form>

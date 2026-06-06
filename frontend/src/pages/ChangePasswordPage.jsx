@@ -31,8 +31,8 @@ export default function ChangePasswordPage() {
 
   if (success) {
     return (
-      <div style={{ maxWidth: 400 }}>
-        <div style={{ background: '#e8f5e9', border: '1px solid #c8e6c9', borderRadius: 8, padding: 20, marginBottom: 16 }}>
+      <div className="max-w-[400px]">
+        <div className="bg-green-50 border border-green-200 rounded-lg p-5 mb-4">
           Password changed successfully.
         </div>
         <button onClick={() => navigate('/orders')}>Back to Orders</button>
@@ -41,19 +41,40 @@ export default function ChangePasswordPage() {
   }
 
   return (
-    <div style={{ maxWidth: 400 }}>
-      <button className="secondary" onClick={() => navigate('/orders')} style={{ marginBottom: 16 }}>
-        ← Back
+    <div className="max-w-[400px]">
+      <button className="secondary mb-4" onClick={() => navigate('/orders')}>
+        ← Back to Orders
       </button>
-      <div style={{ background: 'white', borderRadius: 8, padding: 24, boxShadow: '0 1px 4px rgba(0,0,0,0.08)' }}>
-        <h2 style={{ margin: '0 0 20px' }}>Change Password</h2>
+      <div className="bg-white rounded-lg p-6 shadow-sm">
+        <h2 className="mt-0 mb-5">Change Password</h2>
         <form onSubmit={handleSubmit}>
-          <label>Current Password</label>
-          <input type="password" value={currentPassword} onChange={e => setCurrentPassword(e.target.value)} required />
-          <label>New Password</label>
-          <input type="password" value={newPassword} onChange={e => setNewPassword(e.target.value)} required />
-          <label>Confirm New Password</label>
-          <input type="password" value={confirm} onChange={e => setConfirm(e.target.value)} required />
+          <label htmlFor="cp-current">Current Password</label>
+          <input
+            id="cp-current"
+            type="password"
+            autoComplete="current-password"
+            value={currentPassword}
+            onChange={e => setCurrentPassword(e.target.value)}
+            required
+          />
+          <label htmlFor="cp-new">New Password</label>
+          <input
+            id="cp-new"
+            type="password"
+            autoComplete="new-password"
+            value={newPassword}
+            onChange={e => setNewPassword(e.target.value)}
+            required
+          />
+          <label htmlFor="cp-confirm">Confirm New Password</label>
+          <input
+            id="cp-confirm"
+            type="password"
+            autoComplete="new-password"
+            value={confirm}
+            onChange={e => setConfirm(e.target.value)}
+            required
+          />
           {error && <p className="error">{error}</p>}
           <button type="submit">Change Password</button>
         </form>

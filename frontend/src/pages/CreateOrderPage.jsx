@@ -29,47 +29,69 @@ export default function CreateOrderPage() {
   };
 
   return (
-    <div style={{ maxWidth: 600 }}>
-      <button className="secondary" onClick={() => navigate('/orders')} style={{ marginBottom: 16 }}>
-        ← Back
+    <div className="max-w-[600px]">
+      <button className="secondary mb-4" onClick={() => navigate('/orders')}>
+        ← Back to Orders
       </button>
-      <div style={{ background: 'white', borderRadius: 8, padding: 24, boxShadow: '0 1px 4px rgba(0,0,0,0.08)' }}>
-        <h2 style={{ margin: '0 0 20px' }}>New Order</h2>
+      <div className="bg-white rounded-lg p-6 shadow-sm">
+        <h2 className="mt-0 mb-5">New Order</h2>
         <form onSubmit={handleSubmit}>
-          <label>Title</label>
-          <input value={title} onChange={e => setTitle(e.target.value)} required placeholder="e.g. Q3 Stationery Restock" />
-          <label>Expiry Date</label>
-          <input type="date" value={expiresAt} onChange={e => setExpiresAt(e.target.value)} required />
+          <label htmlFor="order-title">Title</label>
+          <input
+            id="order-title"
+            value={title}
+            onChange={e => setTitle(e.target.value)}
+            required
+            placeholder="e.g. Q3 Stationery Restock"
+            autoFocus
+          />
+          <label htmlFor="order-expires">Expiry Date</label>
+          <input
+            id="order-expires"
+            type="date"
+            value={expiresAt}
+            onChange={e => setExpiresAt(e.target.value)}
+            required
+          />
 
-          <h3 style={{ margin: '16px 0 8px' }}>Items</h3>
+          <h3 className="mt-4 mb-2">Items</h3>
           {items.map((item, i) => (
-            <div key={i} style={{ display: 'flex', gap: 8, marginBottom: 8, alignItems: 'center' }}>
+            <div key={i} className="flex gap-2 mb-2 items-center">
               <input
+                aria-label={`Item ${i + 1} name`}
                 placeholder="Item name"
                 value={item.itemName}
                 onChange={e => updateItem(i, 'itemName', e.target.value)}
                 required
-                style={{ flex: 1, marginBottom: 0 }}
+                className="flex-1 !mb-0"
               />
               <input
+                aria-label={`Item ${i + 1} quantity`}
                 type="number"
                 min="1"
                 value={item.quantity}
                 onChange={e => updateItem(i, 'quantity', e.target.value)}
                 required
-                style={{ width: 80, marginBottom: 0 }}
+                className="w-20 !mb-0"
               />
               {items.length > 1 && (
-                <button type="button" className="danger" onClick={() => removeItem(i)} style={{ padding: '6px 10px' }}>✕</button>
+                <button
+                  type="button"
+                  className="danger px-[10px] py-[6px]"
+                  aria-label={`Remove item ${i + 1}`}
+                  onClick={() => removeItem(i)}
+                >
+                  ✕
+                </button>
               )}
             </div>
           ))}
-          <button type="button" className="secondary" onClick={addItem} style={{ marginBottom: 16 }}>
+          <button type="button" className="secondary mb-4" onClick={addItem}>
             + Add Item
           </button>
 
           {error && <p className="error">{error}</p>}
-          <div style={{ display: 'flex', gap: 8 }}>
+          <div className="flex gap-2">
             <button type="submit">Save as Draft</button>
             <button type="button" className="secondary" onClick={() => navigate('/orders')}>Cancel</button>
           </div>

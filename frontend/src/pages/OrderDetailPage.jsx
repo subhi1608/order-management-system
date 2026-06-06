@@ -43,16 +43,16 @@ export default function OrderDetailPage() {
 
   return (
     <div>
-      <button className="secondary" onClick={() => navigate('/orders')} style={{ marginBottom: 16 }}>
+      <button className="secondary mb-4" onClick={() => navigate('/orders')}>
         ← Back to Orders
       </button>
 
-      <div style={{ background: 'white', borderRadius: 8, padding: 24, boxShadow: '0 1px 4px rgba(0,0,0,0.08)', marginBottom: 20 }}>
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
-          <h2 style={{ margin: 0 }}>{order.title}</h2>
+      <div className="bg-white rounded-lg p-6 shadow-sm mb-5">
+        <div className="flex justify-between items-start">
+          <h2 className="m-0">{order.title}</h2>
           <StatusBadge status={order.status} />
         </div>
-        <div style={{ marginTop: 12, display: 'flex', gap: 24, color: '#555', fontSize: 14 }}>
+        <div className="mt-3 flex gap-6 text-gray-600 text-sm">
           <span>Created by: <strong>{order.createdBy}</strong></span>
           <span>Expires: <strong>{order.expiresAt}</strong></span>
           {order.createdAt && <span>Created: <strong>{new Date(order.createdAt).toLocaleString()}</strong></span>}
@@ -60,19 +60,19 @@ export default function OrderDetailPage() {
       </div>
 
       {order.purchaserNote && (
-        <div style={{ background: '#fff3e0', border: '1px solid #ffe0b2', borderRadius: 8, padding: 16, marginBottom: 16 }}>
+        <div className="bg-orange-50 border border-orange-200 rounded-lg p-4 mb-4">
           <strong>Note from Purchaser:</strong> {order.purchaserNote}
         </div>
       )}
 
       {order.txnReference && (
-        <div style={{ background: '#e8f5e9', border: '1px solid #c8e6c9', borderRadius: 8, padding: 16, marginBottom: 16 }}>
+        <div className="bg-green-50 border border-green-200 rounded-lg p-4 mb-4">
           <strong>Transaction Reference:</strong> {order.txnReference}
         </div>
       )}
 
-      <div style={{ background: 'white', borderRadius: 8, padding: 24, boxShadow: '0 1px 4px rgba(0,0,0,0.08)', marginBottom: 20 }}>
-        <h3 style={{ margin: '0 0 12px' }}>Items</h3>
+      <div className="bg-white rounded-lg p-6 shadow-sm mb-5">
+        <h3 className="mt-0 mb-3">Items</h3>
         <table>
           <thead>
             <tr><th>Item Name</th><th>Quantity</th></tr>
@@ -88,9 +88,9 @@ export default function OrderDetailPage() {
         </table>
       </div>
 
-      {error && <p className="error" style={{ fontSize: 14 }}>{error}</p>}
+      {error && <p className="error text-sm">{error}</p>}
 
-      <div style={{ display: 'flex', gap: 10, flexWrap: 'wrap', alignItems: 'center' }}>
+      <div className="flex gap-2.5 flex-wrap items-center">
         {canEdit && (
           <button className="secondary" onClick={() => navigate(`/orders/${id}/edit`)}>Edit</button>
         )}
@@ -106,7 +106,7 @@ export default function OrderDetailPage() {
               placeholder="Add a note for creator..."
               value={note}
               onChange={e => setNote(e.target.value)}
-              style={{ width: 260, marginBottom: 0 }}
+              className="w-[260px] !mb-0"
             />
             <button className="warning" onClick={() => doAction('return', { note })}>Return</button>
             <button className="danger" onClick={() => doAction('reject', { note })}>Reject</button>
@@ -118,7 +118,7 @@ export default function OrderDetailPage() {
               placeholder="Transaction reference..."
               value={txnRef}
               onChange={e => setTxnRef(e.target.value)}
-              style={{ width: 220, marginBottom: 0 }}
+              className="w-[220px] !mb-0"
             />
             <button className="success" onClick={() => doAction('complete', { txnReference: txnRef })}>
               Mark Complete
