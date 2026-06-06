@@ -11,7 +11,11 @@ public class OrderSpecification {
     public static Specification<Order> titleContains(String title) {
         return (root, query, cb) -> {
             if (title == null || title.isBlank()) return null;
-            return cb.like(cb.lower(root.get("title")), "%" + title.toLowerCase() + "%");
+            String escaped = title.replace("\\", "\\\\")
+                                  .replace("%", "\\%")
+                                  .replace("_", "\\_")
+                                  .toLowerCase();
+            return cb.like(cb.lower(root.get("title")), "%" + escaped + "%", '\\');
         };
     }
 
