@@ -32,7 +32,7 @@ const BASE_COLUMNS = [
 
 const PURCHASER_COLUMN = { id: 'createdBy', label: 'Created By', sortable: false };
 
-export default function OrderTable({ role, onRowClick }) {
+export default function OrderTable({ role, onRowClick = () => {} }) {
   const [page, setPage]                     = useState(0);
   const [rowsPerPage, setRowsPerPage]       = useState(10);
   const [sortField, setSortField]           = useState('createdAt');
@@ -55,18 +55,23 @@ export default function OrderTable({ role, onRowClick }) {
 
   // Fetch on pagination, sort, or debounced title change
   useEffect(() => {
+    const controller = new AbortController();
     setLoading(true);
     setError('');
     const params = { page, size: rowsPerPage, sort: `${sortField},${sortDir}` };
     if (debouncedTitle) params.title = debouncedTitle;
 
-    api.get('/orders', { params })
+    api.get('/orders', { params, signal: controller.signal })
       .then(({ data }) => {
-        setRows(data.content);
-        setTotalElements(data.totalElements);
+        setRows(data.content ?? []);
+        setTotalElements(data.totalElements ?? 0);
       })
-      .catch(() => setError('Failed to load orders'))
+      .catch(err => {
+        if (err.name !== 'CanceledError') setError('Failed to load orders');
+      })
       .finally(() => setLoading(false));
+
+    return () => controller.abort();
   }, [page, rowsPerPage, sortField, sortDir, debouncedTitle]);
 
   const handleSort = (field) => {
@@ -93,12 +98,14 @@ export default function OrderTable({ role, onRowClick }) {
           placeholder="Search by title…"
           value={titleFilter}
           onChange={e => setTitleFilter(e.target.value)}
-          InputProps={{
-            startAdornment: (
-              <InputAdornment position="start">
-                <SearchIcon fontSize="small" />
-              </InputAdornment>
-            ),
+          slotProps={{
+            input: {
+              startAdornment: (
+                <InputAdornment position="start">
+                  <SearchIcon fontSize="small" />
+                </InputAdornment>
+              ),
+            },
           }}
           sx={{ width: 280 }}
         />
@@ -155,7 +162,7 @@ export default function OrderTable({ role, onRowClick }) {
                 >
                   <TableCell>{order.title}</TableCell>
                   <TableCell><StatusBadge status={order.status} /></TableCell>
-                  <TableCell>{order.items.length}</TableCell>
+                  <TableCell>{order.items?.length ?? 0}</TableCell>
                   <TableCell>{order.expiresAt ?? '—'}</TableCell>
                   <TableCell>
                     {order.createdAt ? new Date(order.createdAt).toLocaleDateString() : '—'}
