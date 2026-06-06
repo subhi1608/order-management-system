@@ -163,7 +163,9 @@ export default function OrderTable({ role, onRowClick = () => {} }) {
                   <TableCell>{order.title}</TableCell>
                   <TableCell><StatusBadge status={order.status} /></TableCell>
                   <TableCell>{order.items?.length ?? 0}</TableCell>
-                  <TableCell>{order.expiresAt ?? '—'}</TableCell>
+                  <TableCell>
+                    {order.expiresAt ? new Date(order.expiresAt).toLocaleDateString() : '—'}
+                  </TableCell>
                   <TableCell>
                     {order.createdAt ? new Date(order.createdAt).toLocaleDateString() : '—'}
                   </TableCell>
