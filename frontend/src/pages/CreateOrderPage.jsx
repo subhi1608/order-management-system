@@ -2,10 +2,17 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import api from '../api/axios';
 
+const getDefaultExpiry = () => {
+  const d = new Date(Date.now() + 48 * 60 * 60 * 1000);
+  return d.toISOString().slice(0, 10);
+};
+
+const getTodayStr = () => new Date().toISOString().slice(0, 10);
+
 export default function CreateOrderPage() {
   const navigate = useNavigate();
   const [title, setTitle] = useState('');
-  const [expiresAt, setExpiresAt] = useState('');
+  const [expiresAt, setExpiresAt] = useState(getDefaultExpiry);
   const [items, setItems] = useState([{ itemName: '', quantity: 1 }]);
   const [error, setError] = useState('');
 
@@ -51,6 +58,7 @@ export default function CreateOrderPage() {
             type="date"
             value={expiresAt}
             onChange={e => setExpiresAt(e.target.value)}
+            min={getTodayStr()}
             required
           />
 
@@ -63,7 +71,7 @@ export default function CreateOrderPage() {
                 value={item.itemName}
                 onChange={e => updateItem(i, 'itemName', e.target.value)}
                 required
-                className="flex-1 !mb-0"
+                style={{ flex: 1, width: 'auto', marginBottom: 0 }}
               />
               <input
                 aria-label={`Item ${i + 1} quantity`}
@@ -72,7 +80,7 @@ export default function CreateOrderPage() {
                 value={item.quantity}
                 onChange={e => updateItem(i, 'quantity', e.target.value)}
                 required
-                className="w-20 !mb-0"
+                style={{ width: '5rem', flexShrink: 0, marginBottom: 0 }}
               />
               {items.length > 1 && (
                 <button

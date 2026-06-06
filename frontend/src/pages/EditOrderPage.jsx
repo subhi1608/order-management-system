@@ -65,6 +65,7 @@ export default function EditOrderPage() {
             type="date"
             value={expiresAt}
             onChange={e => setExpiresAt(e.target.value)}
+            min={new Date().toISOString().slice(0, 10)}
             required
           />
 
@@ -77,7 +78,7 @@ export default function EditOrderPage() {
                 value={item.itemName}
                 onChange={e => updateItem(i, 'itemName', e.target.value)}
                 required
-                className="flex-1 !mb-0"
+                style={{ flex: 1, width: 'auto', marginBottom: 0 }}
               />
               <input
                 aria-label={`Item ${i + 1} quantity`}
@@ -86,7 +87,7 @@ export default function EditOrderPage() {
                 value={item.quantity}
                 onChange={e => updateItem(i, 'quantity', e.target.value)}
                 required
-                className="w-20 !mb-0"
+                style={{ width: '5rem', flexShrink: 0, marginBottom: 0 }}
               />
               {items.length > 1 && (
                 <button

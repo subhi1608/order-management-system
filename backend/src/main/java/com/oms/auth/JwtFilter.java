@@ -44,7 +44,6 @@ public class JwtFilter extends OncePerRequestFilter {
                 }
             }
         } catch (io.jsonwebtoken.JwtException | IllegalArgumentException ignored) {
-            // invalid/expired token — let Spring Security deny with 401
         }
         chain.doFilter(request, response);
     }

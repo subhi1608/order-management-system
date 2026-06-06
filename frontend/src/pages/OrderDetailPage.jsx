@@ -1,49 +1,56 @@
-import { useEffect, useState } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
-import { useAuth } from '../context/AuthContext';
-import api from '../api/axios';
-import StatusBadge from '../components/StatusBadge';
+import { useEffect, useState } from "react";
+import { useParams, useNavigate } from "react-router-dom";
+import { useAuth } from "../context/AuthContext";
+import api from "../api/axios";
+import StatusBadge from "../components/StatusBadge";
 
 export default function OrderDetailPage() {
   const { id } = useParams();
   const { user } = useAuth();
   const navigate = useNavigate();
   const [order, setOrder] = useState(null);
-  const [note, setNote] = useState('');
-  const [txnRef, setTxnRef] = useState('');
-  const [error, setError] = useState('');
+  const [note, setNote] = useState("");
+  const [txnRef, setTxnRef] = useState("");
+  const [error, setError] = useState("");
 
   useEffect(() => {
-    api.get(`/orders/${id}`).then(({ data }) => setOrder(data))
-      .catch(() => setError('Failed to load order'));
+    api
+      .get(`/orders/${id}`)
+      .then(({ data }) => setOrder(data))
+      .catch(() => setError("Failed to load order"));
   }, [id]);
 
   const doAction = async (action, body = {}) => {
     try {
-      setError('');
+      setError("");
       const { data } = await api.post(`/orders/${id}/${action}`, body);
       setOrder(data);
-      setNote('');
-      setTxnRef('');
+      setNote("");
+      setTxnRef("");
     } catch (e) {
-      setError(e.response?.data?.message || e.response?.data || 'Action failed');
+      const d = e.response?.data;
+      setError(
+        (typeof d === "string" ? d : d?.detail || d?.message || d?.error) ||
+          "Action failed",
+      );
     }
   };
 
   if (!order) return <p>Loading…</p>;
 
   const isOwner = order.createdBy === user.username;
-  const isCreator = user.role === 'CREATOR';
-  const isPurchaser = user.role === 'PURCHASER';
-  const canEdit = isCreator && isOwner && (order.status === 'DRAFT' || order.status === 'RETURNED');
-  const canSubmit = canEdit;
-  const canApprove = isPurchaser && order.status === 'SUBMITTED';
-  const canActOnSubmitted = isPurchaser && order.status === 'SUBMITTED';
-  const canComplete = isPurchaser && order.status === 'APPROVED';
+  const isCreator = user.role === "CREATOR";
+  const isPurchaser = user.role === "PURCHASER";
+  const canEdit =
+    isCreator &&
+    isOwner &&
+    (order.status === "DRAFT" || order.status === "RETURNED");
+  const canActOnSubmitted = isPurchaser && order.status === "SUBMITTED";
+  const canComplete = isPurchaser && order.status === "APPROVED";
 
   return (
     <div>
-      <button className="secondary mb-4" onClick={() => navigate('/orders')}>
+      <button className="secondary mb-4" onClick={() => navigate("/orders")}>
         ← Back to Orders
       </button>
 
@@ -53,9 +60,18 @@ export default function OrderDetailPage() {
           <StatusBadge status={order.status} />
         </div>
         <div className="mt-3 flex gap-6 text-gray-600 text-sm">
-          <span>Created by: <strong>{order.createdBy}</strong></span>
-          <span>Expires: <strong>{order.expiresAt}</strong></span>
-          {order.createdAt && <span>Created: <strong>{new Date(order.createdAt).toLocaleString()}</strong></span>}
+          <span>
+            Created by: <strong>{order.createdBy}</strong>
+          </span>
+          <span>
+            Expires: <strong>{order.expiresAt}</strong>
+          </span>
+          {order.createdAt && (
+            <span>
+              Created:{" "}
+              <strong>{new Date(order.createdAt).toLocaleString()}</strong>
+            </span>
+          )}
         </div>
       </div>
 
@@ -75,10 +91,13 @@ export default function OrderDetailPage() {
         <h3 className="mt-0 mb-3">Items</h3>
         <table>
           <thead>
-            <tr><th>Item Name</th><th>Quantity</th></tr>
+            <tr>
+              <th>Item Name</th>
+              <th>Quantity</th>
+            </tr>
           </thead>
           <tbody>
-            {order.items.map(item => (
+            {order.items.map((item) => (
               <tr key={item.id}>
                 <td>{item.itemName}</td>
                 <td>{item.quantity}</td>
@@ -92,24 +111,41 @@ export default function OrderDetailPage() {
 
       <div className="flex gap-2.5 flex-wrap items-center">
         {canEdit && (
-          <button className="secondary" onClick={() => navigate(`/orders/${id}/edit`)}>Edit</button>
+          <button
+            className="secondary"
+            onClick={() => navigate(`/orders/${id}/edit`)}
+          >
+            Edit
+          </button>
         )}
-        {canSubmit && (
-          <button className="success" onClick={() => doAction('submit')}>Submit</button>
-        )}
-        {canApprove && (
-          <button className="success" onClick={() => doAction('approve')}>Approve</button>
+        {canEdit && (
+          <button className="success" onClick={() => doAction("submit")}>
+            Submit
+          </button>
         )}
         {canActOnSubmitted && (
           <>
+            <button className="success" onClick={() => doAction("approve")}>
+              Approve
+            </button>
             <input
               placeholder="Add a note for creator..."
               value={note}
-              onChange={e => setNote(e.target.value)}
+              onChange={(e) => setNote(e.target.value)}
               className="w-[260px] !mb-0"
             />
-            <button className="warning" onClick={() => doAction('return', { note })}>Return</button>
-            <button className="danger" onClick={() => doAction('reject', { note })}>Reject</button>
+            <button
+              className="warning"
+              onClick={() => doAction("return", { note })}
+            >
+              Return
+            </button>
+            <button
+              className="danger"
+              onClick={() => doAction("reject", { note })}
+            >
+              Reject
+            </button>
           </>
         )}
         {canComplete && (
@@ -117,10 +153,13 @@ export default function OrderDetailPage() {
             <input
               placeholder="Transaction reference..."
               value={txnRef}
-              onChange={e => setTxnRef(e.target.value)}
+              onChange={(e) => setTxnRef(e.target.value)}
               className="w-[220px] !mb-0"
             />
-            <button className="success" onClick={() => doAction('complete', { txnReference: txnRef })}>
+            <button
+              className="success"
+              onClick={() => doAction("complete", { txnReference: txnRef })}
+            >
               Mark Complete
             </button>
           </>

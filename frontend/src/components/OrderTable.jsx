@@ -42,9 +42,9 @@ export default function OrderTable({ role, onRowClick = () => {} }) {
   const [rows, setRows]                     = useState([]);
   const [totalElements, setTotalElements]   = useState(0);
   const [loading, setLoading]               = useState(true);
+  const [fetching, setFetching]             = useState(false);
   const [error, setError]                   = useState('');
 
-  // Debounce: wait 400ms after the user stops typing, then update debouncedTitle and reset page
   useEffect(() => {
     const timer = setTimeout(() => {
       setDebouncedTitle(titleFilter);
@@ -53,10 +53,9 @@ export default function OrderTable({ role, onRowClick = () => {} }) {
     return () => clearTimeout(timer);
   }, [titleFilter]);
 
-  // Fetch on pagination, sort, or debounced title change
   useEffect(() => {
     const controller = new AbortController();
-    setLoading(true);
+    setFetching(true);
     setError('');
     const params = { page, size: rowsPerPage, sort: `${sortField},${sortDir}` };
     if (debouncedTitle) params.title = debouncedTitle;
@@ -69,7 +68,10 @@ export default function OrderTable({ role, onRowClick = () => {} }) {
       .catch(err => {
         if (err.name !== 'CanceledError') setError('Failed to load orders');
       })
-      .finally(() => setLoading(false));
+      .finally(() => {
+        setLoading(false);
+        setFetching(false);
+      });
 
     return () => controller.abort();
   }, [page, rowsPerPage, sortField, sortDir, debouncedTitle]);
@@ -113,7 +115,7 @@ export default function OrderTable({ role, onRowClick = () => {} }) {
 
       {error && <Alert severity="error" sx={{ mx: 2, mb: 1 }}>{error}</Alert>}
 
-      <TableContainer>
+      <TableContainer sx={{ opacity: fetching ? 0.5 : 1, transition: 'opacity 0.15s' }}>
         <Table size="small">
           <TableHead>
             <TableRow>
