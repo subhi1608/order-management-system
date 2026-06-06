@@ -6,6 +6,8 @@ import java.util.List;
 
 public class OrderSpecification {
 
+    private OrderSpecification() {}
+
     public static Specification<Order> titleContains(String title) {
         return (root, query, cb) -> {
             if (title == null || title.isBlank()) return null;
@@ -14,11 +16,16 @@ public class OrderSpecification {
     }
 
     public static Specification<Order> ownedBy(String username) {
-        return (root, query, cb) ->
-                cb.equal(root.get("createdBy").get("username"), username);
+        return (root, query, cb) -> {
+            if (username == null) return null;
+            return cb.equal(root.get("createdBy").get("username"), username);
+        };
     }
 
     public static Specification<Order> statusIn(List<OrderStatus> statuses) {
-        return (root, query, cb) -> root.get("status").in(statuses);
+        return (root, query, cb) -> {
+            if (statuses == null || statuses.isEmpty()) return null;
+            return root.get("status").in(statuses);
+        };
     }
 }
